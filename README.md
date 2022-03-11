@@ -22,3 +22,15 @@ log file save at oss2 bucket: recomputerjetsonlituo
 #40Pin Header GPIO testing Header   
 3-40, 5-38, 7-36, 11-32, 13-26, 15-24, 19-22, 21-18, 23-16, 29-10, 35-12, 31-8, 33-37   
 
+#Enable eeprom steps
+cp drivers jetson-sdmmc-overlay.dtbo /boot   
+mkdir /lib/modules/4.9.253-tegra/extra   
+cp drivers/misc/eeprom/at24.ko /lib/modules/4.9.253-tegra/extra   
+cp drivers/misc/mods/mods.ko /lib/modules/4.9.253-tegra/extra   
+cp drivers/nvmem/nvmem_core.ko /lib/modules/4.9.253-tegra/extra   
+depmod -a   
+cp drivers/jetson-sdmmc-overlay.dtbo /boot   
+cd /boot   
+sudo /opt/nvidia/jetson-io/config-by-hardware.py -n "reComputer sdmmc"   
+
+

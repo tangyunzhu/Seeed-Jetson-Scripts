@@ -1,0 +1,53 @@
+#!/bin/bash
+
+ng_flag=0
+usb2_count=2
+usb3_count=2
+usbdevices_all=6 #usb2.0x2,usb3.0x2,boot_disk,recovey port
+usb3_flag="Class=MassStorage,Driver=usb-storage,5000M"
+usb2_flag="Class=MassStorage,Driver=usb-storage,480M"
+
+
+n=15
+while [ $n -ge 0 ]
+do
+        echo -ne $n.
+        sleep 1
+        let "n = $n - 1"
+done
+echo ""
+
+
+
+lsusb -t > usbdevice.log
+cat usbdevice.log > upload_log
+str=$(cat usbdevice.log)
+str=$(echo $str | sed 's/ //g')  #remove spance
+echo $str > log
+#cat log
+r1=$(grep -o $usb2_flag log | wc -l)
+#echo $r
+if [ $r1 -ge $usb2_count ]; then
+	echo "USB hub's USB2.0 ok"  [$usb2_count/$r1]
+	echo "USB hub's USB2.0 OK" >> upload_log
+else
+	echo "USB hub's USB2.0 fail"  [$usb2_count/$r1]
+	echo "USB hub's USB2.0 FAIL" >> upload_log
+fi
+
+r2=$(grep -o $usb3_flag log | wc -l)
+#echo $r
+if [ $r2 -ge $usb3_count ]; then
+	echo "USB hub's USB3.0 ok" [$usb3_count/$r2]
+	echo "USB hub's USB3.0 OK" >> upload_log
+else
+	echo "USB hub's USB3.0 fail" [$usb3_count/$r2]
+	echo "USB hub's USB3.0 FAIL" >> upload_log
+fi
+
+num=`expr $r1 + $r2`
+#echo $num
+if [ $num -ne 6 ]; then
+	echo "USB Devices should be 6!" >> upload_log
+	exit 3
+fi

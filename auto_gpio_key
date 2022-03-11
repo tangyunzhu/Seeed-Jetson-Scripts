@@ -1,0 +1,4 @@
+#!/bin/bash
+cd serial_tool
+echo "P 4 1" | python3 serial_rw.py
+cd ..

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo "start to flash in 10s"
+n=10
+while [ $n -ge 0 ]
+do
+        echo -ne $n.
+        sleep 1
+        let "n = $n - 1"
+done
+
+echo "000000" | sudo -S umount /dev/sdb1
+sleep 1
+echo "000000" | sudo -S mount /dev/sdb1 /mnt
+echo "000000" | sudo -S dd if=/mnt/sd-blob-b01.img of=/dev/mmcblk0
+echo "flash emmc down, OS will shutdown in 5s"
+n=5
+while [ $n -ge 0 ]
+do
+        echo -ne $n.
+        sleep 1
+        let "n = $n - 1"
+done
+echo ""
+#poweroff
+

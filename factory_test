@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+show_result() {
+	echo ""
+	echo ""
+	r=$1
+	if [ $r -ne 0 ]; then
+		echo -e "\e[31m->Test FAIL \e[0m"
+		cp upload_log $logfileName_FAIL
+		python3 alicloud_upload.py $logfileName_FAIL $logfileName_FAIL
+		mv $logfileName_FAIL ./test_log/
+		while [ 1 ]
+		do
+			sleep 1
+		done
+	fi
+}
+
+sn=$(cat /proc/device-tree/serial-number)
+echo $sn > Jetson_sn
+
+now=`TZ='Asia/Shanghai' date +"%Y%m%d-%H%M%S"`
+logfileName_FAIL=$(cat Jetson_sn)_T${now}_FAIL.log
+logfileName_PASS=$(cat Jetson_sn)_T${now}_PASS.log
+
+iperf_server=$(cat /home/ot/Desktop/iperf_server)
+
+./auto_read_memory
+r=$?
+show_result $r
+
+./auto_usb
+r=$?
+show_result $r
+
+./auto_recoveryport_nano
+r=$?
+show_result $r
+
+
+./auto_iperf $iperf_server
+r=$?
+show_result $r
+
+./auto_csi
+r=$?
+show_result $r
+
+i2cdump -f -y 2 0x50 >> upload_log
+cp upload_log $logfileName_PASS
+python3 alicloud_upload.py $logfileName_PASS $logfileName_PASS
+r=$?
+mv $logfileName_PASS ./test_log/
+show_result $r
+
+echo -e "\e[32m->Test OK, sys will power off in 5s \e[0m"
+n=5
+while [ $n -ge 0 ]
+do
+        echo -ne $n.
+        sleep 1
+        let "n = $n - 1"
+done
+echo ""
+poweroff

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+strNano="MemTotal: 40"
+strNx8g="MemTotal:        79"
+strNx16g="MemTotal: 16"
+
+cat /proc/meminfo > memory.log
+
+#model=$(head -n 1 /home/ot/Desktop/model)
+#echo $model
+model=$strNano
+d=$(head -n 1 memory.log)
+size=${d:10:5}
+result=$(echo $d | grep "$strNano")
+if [[ "$result" != "" ]]
+then
+	echo "Jetson Nano Memory OK"
+	echo "Jetson Nano Memory OK" >> upload_log
+    	exit 0
+else
+	echo "Jetson Nano Memory FAIL"
+    	echo "Jetson Nano Memory FAIL" >> upload_log
+    	exit 1
+fi

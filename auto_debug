@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./tty_pairs ttyACM0,ttyGS0

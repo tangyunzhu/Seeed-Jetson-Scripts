@@ -1,0 +1,61 @@
+#!/bin/bash
+
+csi0_test()
+{
+	./v4l2_test -d /dev/video0 >> ../upload_log
+	r=$?
+	if [ "$r" -eq 0 ]; then
+        	echo "Video0 OK"
+        	echo "Video0 OK" >> ../upload_log
+	else
+        	echo "Video0 FAIL"
+		echo "Video1 FAIL" >> ../upload_log
+        	return 2
+	fi
+
+}
+
+
+csi1_test()
+{
+	./v4l2_test -d /dev/video1 >> ../upload_log
+	r=$?
+	if [ "$r" -eq 0 ]; then
+        	echo "Video1 OK"
+		echo "Video1 OK" >> ../upload_log
+	else
+        	echo "Video1 FAIL"
+		echo "Video1 FAIL" >> ../upload_log
+        	return 3
+	fi
+
+}
+
+
+
+cd v4l2_test
+csi0_test
+r=$r
+rm -rf uyvy*
+if [ $r -ne 0 ]; then
+	csi0_test
+	r=$r
+	if [ $r -ne 0 ]; then
+		exit 1
+	fi
+fi
+
+sleep 1
+
+csi1_test
+r=$r
+rm -f uyvy*
+if [ $r -ne 0 ]; then
+        csi1_test
+        r=$r
+        if [ $r -ne 0 ]; then
+                exit 1
+        fi
+fi
+
+exit 0

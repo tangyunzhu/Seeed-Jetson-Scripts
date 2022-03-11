@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ $1 ]; then
+	ip=$1
+else
+	ip=$(cat /home/ot/Desktop/iperf_server)
+
+fi
+
+speed_min=100
+echo "iperf host ip is:" $ip
+iperf3 -c $ip  > iperf.log
+r=$(sed -n '16p' iperf.log)
+echo $r
+m=`expr index "$r" M`
+#echo $m
+S=${r:$m-7:5} 
+cat iperf.log >> upload_log
+echo "Speed is: " $S "Mbits/sec"
+
+if [ $S -ge $speed_min ]
+
+then
+
+	echo "Ethernet Speed PASS"
+	echo "Ethernet Speed PASS" >> upload_log
+	exit 0
+else
+
+	echo "Ethernet Speed FAILED"
+	echo "Ethernet Speed FAILED" >> upload_log
+	exit 1
+fi

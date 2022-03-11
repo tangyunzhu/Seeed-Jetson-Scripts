@@ -1,0 +1,4 @@
+#!/bin/bash
+
+eeprom="/sys/bus/i2c/devices/2-0057/eeprom"
+i2cdump -f -y 2 0x57

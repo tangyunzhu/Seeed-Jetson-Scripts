@@ -1,0 +1,15 @@
+#!/bin/bash
+
+lsusb > usb.log
+cat usb.log >> upload_log
+r=$(grep -c "0955:7020 NVidia Corp" usb.log)
+#echo $r
+if [ $r -eq 1 ]; then
+	echo "Recovery port OK"
+	echo "Recovery port OK" >> upload_log
+	exit 0
+else
+	echo "Recovery port fail"
+	echo "Recovery port FAIL" >> upload_log
+	exit 1
+fi

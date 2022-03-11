@@ -1,0 +1,3 @@
+#/bin/bash
+eeprom="/sys/bus/i2c/devices/2-0057/eeprom"
+dd if=eeprom_data/eeprom_stand.tmp of=$eeprom

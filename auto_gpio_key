@@ -1,4 +1,27 @@
 #!/bin/bash
 cd serial_tool
-echo "P 4 1" | python3 serial_rw.py
+gpio set 169
+gpio clear 27
+gpio set 28
+gpio clear 25
+gpio set 26
+gpio clear 62
+gpio set 34
+gpio clear 33
+gpio set 32
+gpio clear 35
+r=$(echo "P 1" | python3 serial_rw.py)
+echo $r
+gpio clear 169
+gpio set 27
+gpio clear 28
+gpio set 25
+gpio clear 26
+gpio set 62
+gpio clear 34
+gpio set 33
+gpio clear 32
+gpio set 35
+r=$(echo "P 2" | python3 serial_rw.py)
+echo $r
 cd ..
